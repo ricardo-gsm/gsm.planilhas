@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Planilhas GSM - Login</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h2>Login</h2>
+
+    <form onsubmit="fazerLogin(); return false;">
+      <input type="text" id="loginUsuario" placeholder="Usuário" required />
+      <div class="senha-container">
+        <input type="password" id="loginSenha" placeholder="Senha" required />
+        <span class="toggle-senha" onclick="toggleSenha('loginSenha', this)">👁️</span>
+      </div>
+      <button type="submit">Entrar</button>
+    </form>
+
+    <p style="text-align:center; margin-top: 15px;">
+      <a href="cadastro.html">Cadastrar novo usuário</a>
+    </p>
+
+    <div id="mensagem"></div>
+
+    <!-- Link da planilha (mostrado após login) -->
+    <p id="linkPlanilhaContainer" style="display:none; margin-top: 20px; text-align: center;">
+      <a
+        id="linkPlanilha"
+        href="https://gsmtransporte-my.sharepoint.com/:x:/g/personal/magno_oliveira_gsmtransportes_com/ETa5zRHJzVZAvlKHZObb8z8B8Z_DBH4GTxFY_cMseQohrQ?e=PiJ6gu"
+        target="_blank"
+        style="font-weight: bold; font-size: 16px; color: #007bff; text-decoration: none;"
+      >EMBARQUE AGENCIAS MÊS 07/2025
+      </a>
+    </p>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
