@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard - Planilhas GSM</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h2>Dashboard</h2>
+
+    <p>Bem-vindo, <span id="nomeUsuario"></span>!</p>
+
+    <!-- Link da planilha -->
+    <p id="linkPlanilhaContainer" style="margin-top: 20px;">
+      <a
+        id="linkPlanilha"
+        href="https://gsmtransporte-my.sharepoint.com/:x:/g/personal/magno_oliveira_gsmtransportes_com/ETa5zRHJzVZAvlKHZObb8z8B8Z_DBH4GTxFY_cMseQohrQ?e=PiJ6gu"
+        target="_blank"
+        style="font-weight: bold; font-size: 16px; color: #007bff; text-decoration: none;"
+      >EMBARQUE AGENCIAS MÊS 07/2025
+      </a>
+    </p>
+
+    <!-- Link da Área de Administração (visível só para admin) -->
+    <p id="linkAdminContainer" style="margin-top: 20px; display: none;">
+      <a href="admin.html" style="font-weight: bold; font-size: 16px; color: #dc3545; text-decoration: none;">
+        Área de administração
+      </a>
+    </p>
+
+    <!-- Botão Logout -->
+    <div style="margin-top: 30px;">
+      <button onclick="fazerLogout()">Sair</button>
+    </div>
+
+    <div id="mensagem" style="margin-top: 15px; font-weight: bold; text-align:center;"></div>
+  </div>
+
+  <script src="dashboard.js"></script>
+</body>
+</html>

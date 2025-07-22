@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Administração de Usuários</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h2>Administração de Usuários</h2>
+    <hr style="margin-bottom: 20px;" />
+
+    <table border="1" style="width: 100%; text-align: left; border-collapse: collapse;">
+      <thead>
+        <tr style="background-color: #f0f8ff;">
+          <th style="padding: 8px;">Usuário</th>
+          <th style="padding: 8px;">E-mail</th>
+          <th style="padding: 8px;">Perfil</th>
+          <th style="padding: 8px;">Alterar Perfil</th>
+        </tr>
+      </thead>
+      <tbody id="tabelaUsuarios"></tbody>
+    </table>
+
+    <div style="display: flex; justify-content: center; gap: 15px; margin-top: 25px;">
+      <button onclick="voltarDashboard()">Voltar ao Dashboard</button>
+      <button onclick="fazerLogout()">Sair</button>
+    </div>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>

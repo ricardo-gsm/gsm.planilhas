@@ -4,57 +4,73 @@ function mostrarMensagem(texto, cor = 'black') {
   div.style.color = cor;
 }
 
-function fazerCadastro() {
+async function gerarHash(senha) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(senha);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function fazerCadastro() {
   const usuario = document.getElementById('cadastroUsuario').value.trim();
   const email = document.getElementById('cadastroEmail').value.trim();
   const senha = document.getElementById('cadastroSenha').value;
 
   const usuarios = JSON.parse(localStorage.getItem('usuarios')) || {};
 
-  // Validação simples de e-mail
   const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-
   if (!emailValido) {
-    document.getElementById('mensagem').textContent = 'E-mail inválido. Verifique e tente novamente.';
+    mostrarMensagem('E-mail inválido. Verifique e tente novamente.', 'red');
     return;
   }
 
   if (usuarios[usuario]) {
-    document.getElementById('mensagem').textContent = 'Usuário já existe!';
-  } else {
-    usuarios[usuario] = {
-      senha: senha,
-      email: email
-    };
-    localStorage.setItem('usuarios', JSON.stringify(usuarios));
-    document.getElementById('mensagem').textContent = 'Usuário cadastrado com sucesso!';
-    document.getElementById('cadastroUsuario').value = '';
-    document.getElementById('cadastroEmail').value = '';
-    document.getElementById('cadastroSenha').value = '';
+    mostrarMensagem('Usuário já existe!', 'red');
+    return;
   }
+
+  const senhaHash = await gerarHash(senha);
+
+  // Se for o primeiro usuário cadastrado, define perfil como admin, senão usuário
+  const perfil = Object.keys(usuarios).length === 0 ? 'admin' : 'usuario';
+
+  usuarios[usuario] = {
+    senha: senhaHash,
+    email: email,
+    perfil: perfil
+  };
+
+  localStorage.setItem('usuarios', JSON.stringify(usuarios));
+
+  mostrarMensagem(`Usuário cadastrado com sucesso! Seu perfil é: ${perfil.toUpperCase()}`, 'green');
+
+  // Limpa campos do cadastro
+  document.getElementById('cadastroUsuario').value = '';
+  document.getElementById('cadastroEmail').value = '';
+  document.getElementById('cadastroSenha').value = '';
 }
 
-function fazerLogin() {
-  const usuario = document.getElementById('loginUsuario').value;
+async function fazerLogin() {
+  const usuario = document.getElementById('loginUsuario').value.trim();
   const senha = document.getElementById('loginSenha').value;
   const usuarios = JSON.parse(localStorage.getItem('usuarios')) || {};
 
-  if (usuarios[usuario] && usuarios[usuario] === senha) {
-    sessionStorage.setItem('usuarioLogado', usuario);
-    document.getElementById('mensagem').textContent = 'Login bem-sucedido!';
+  const senhaHash = await gerarHash(senha);
 
-    // Mostra o link imediatamente após o login
-    document.getElementById('linkPlanilhaContainer').style.display = 'block';
+  if (usuarios[usuario] && usuarios[usuario].senha === senhaHash) {
+	sessionStorage.setItem('usuarioLogado', usuario);
+	sessionStorage.setItem('perfilUsuario', usuarios[usuario].perfil);  // salvar perfil
+	mostrarMensagem('Login bem-sucedido!', 'green');
 
-    // Opcional: desabilita campos após login
-    document.getElementById('loginUsuario').disabled = true;
-    document.getElementById('loginSenha').disabled = true;
+	// Redireciona para o dashboard
+	window.location.href = 'dashboard.html';
+
   } else {
-    document.getElementById('mensagem').textContent = 'Usuário ou senha inválidos.';
-    document.getElementById('linkPlanilhaContainer').style.display = 'none';
-  }
+	mostrarMensagem('Usuário ou senha inválidos.', 'red');
 }
 
+}
 
 function toggleSenha(idCampo, el) {
   const campo = document.getElementById(idCampo);
@@ -67,12 +83,30 @@ function mostrarPlanilha() {
   const usuarioLogado = sessionStorage.getItem('usuarioLogado');
   if (usuarioLogado) {
     document.getElementById('linkPlanilhaContainer').style.display = 'block';
+    document.getElementById('loginUsuario').disabled = true;
+    document.getElementById('loginSenha').disabled = true;
   } else {
     document.getElementById('linkPlanilhaContainer').style.display = 'none';
+    document.getElementById('loginUsuario').disabled = false;
+    document.getElementById('loginSenha').disabled = false;
   }
 }
 
-// Para manter o estado caso a página seja recarregada
+function fazerLogout() {
+  sessionStorage.clear();
+  mostrarMensagem('Logout feito com sucesso!', 'black');
+
+  // Limpa e reativa campos do login
+  document.getElementById('loginUsuario').value = '';
+  document.getElementById('loginSenha').value = '';
+  document.getElementById('loginUsuario').disabled = false;
+  document.getElementById('loginSenha').disabled = false;
+
+  // Oculta elementos pós-login
+  document.getElementById('linkPlanilhaContainer').style.display = 'none';
+}
+
+// Mantém estado caso a página seja recarregada
 window.onload = function () {
   mostrarPlanilha();
 };
